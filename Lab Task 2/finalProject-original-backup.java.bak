@@ -1,0 +1,165 @@
+import java.util.Scanner;
+
+public class finalProject {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        String name = "huzaifa";
+        String pin = "1234";
+        double amount = 500000;
+
+        System.out.println("Welcome to ATM!");
+        System.out.println("Login to your Account");
+
+        // Check if user enters correct username and PIN
+        if (userAuthenticate(pin, name)) {
+
+            while (true) {
+
+                System.out.println("\nEnter: -");
+                System.out.println("1 to Check Balance");
+                System.out.println("2 to Withdraw Money");
+                System.out.println("3 to Deposit Money");
+                System.out.println("4 to Exit");
+
+                int operation = sc.nextInt();
+
+                switch (operation) {
+
+                    case 1:
+                        checkBalance(amount);
+                        break;
+
+                    case 2:
+                        amount = withdrawMoney(amount);
+                        break;
+
+                    case 3:
+                        amount = depositMoney(amount);
+                        break;
+
+                    case 4:
+                        System.out.println("Thanks for using ATM. Goodbye!");
+                        return;
+
+                    default:
+                        System.out.println("Invalid input!");
+                }
+
+                System.out.print("\nDo you want to perform another operation? (Yes/No): ");
+                String anotherOperation = sc.next().toLowerCase();
+
+                if (!anotherOperation.equals("yes")) {
+                    System.out.println("Thanks for using ATM. Goodbye!");
+                    break;
+                }
+            }
+
+        } else {
+            System.out.println("User not found!");
+        }
+
+        sc.close();
+    }
+
+    // Method to authenticate user
+    public static boolean userAuthenticate(String pin, String name) {
+
+        System.out.print("Enter your name: ");
+        String username = sc.next().toLowerCase();
+
+        if (!username.equals(name)) {
+            System.out.println("Wrong username!");
+            return false;
+        }
+
+        System.out.print("Please enter your PIN: ");
+
+        // User gets 3 attempts to enter PIN
+        int attempts = 0;
+
+        while (attempts < 3) {
+
+            String userPin = sc.next();
+            attempts++;
+
+            if (userPin.equals(pin)) {
+                System.out.println("Login successful!");
+                return true;
+            } else {
+
+                if (attempts == 3) {
+                    System.out.println("Attempts limit reached!");
+                    return false;
+                }
+
+                System.out.print("Wrong PIN! Please try again: ");
+            }
+        }
+
+        return false;
+    }
+
+    // Method to deposit money
+    public static double depositMoney(double amount) {
+
+        System.out.print("Enter amount you want to deposit: ");
+        double depositAmount = sc.nextDouble();
+
+        if (depositAmount > 0) {
+            amount += depositAmount;
+            System.out.println("Your new balance is: Rs. " + amount);
+        } else {
+            System.out.println("Invalid deposit amount!");
+        }
+
+        return amount;
+    }
+
+    // Method to withdraw money
+    public static double withdrawMoney(double amount) {
+
+        System.out.print("Enter amount you want to withdraw: ");
+        double withdrawAmount = sc.nextDouble();
+
+        if (withdrawAmount <= 0) {
+            System.out.println("Invalid withdrawal amount!");
+        } 
+        else if (withdrawAmount <= amount) {
+
+            amount -= withdrawAmount;
+
+            System.out.println("Your transaction is successful.");
+            System.out.println("Remaining balance: Rs. " + amount);
+
+            System.out.print("Do you want to print Receipt? (Yes/No): ");
+            String printReceiptOption = sc.next().toLowerCase();
+
+            if (printReceiptOption.equals("yes")) {
+                printReceipt(withdrawAmount, amount);
+            }
+
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+
+        return amount;
+    }
+
+    // Method to check balance
+    public static void checkBalance(double amount) {
+        System.out.println("Your balance is: Rs. " + amount);
+    }
+
+    // Method to print receipt
+    public static void printReceipt(double withdrawAmount, double remainingAmount) {
+
+        System.out.println("\n--- Transaction Receipt ---");
+        System.out.printf("Transaction Amount: Rs. %.2f%n", withdrawAmount);
+        System.out.printf("Balance After Transaction: Rs. %.2f%n", remainingAmount);
+        System.out.println("Thank you for using our ATM!");
+        System.out.println("----------------------------");
+    }
+}
